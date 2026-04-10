@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Kurikulum Merdeka - SDN 1 Segeri</title>
+    <style>
+        :root {
+            --primary: #1a5f7a; /* Warna Biru Laut (Konteks Pesisir) */
+            --secondary: #159895;
+            --accent: #ffc300;
+            --light: #f4f9f9;
+            --text: #2c3e50;
+            --white: #ffffff;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: var(--light); color: var(--text); }
+        
+        /* Header */
+        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 25px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        header h1 { margin: 0; font-size: 1.8rem; }
+        header p { margin: 5px 0 0; opacity: 0.9; font-size: 1rem; }
+        .school-info { font-size: 0.85rem; margin-top: 10px; font-style: italic; }
+
+        /* Navigation */
+        nav { background: white; display: flex; justify-content: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow-x: auto; }
+        nav button { background: none; border: none; padding: 15px 20px; cursor: pointer; font-weight: bold; color: var(--primary); white-space: nowrap; transition: 0.3s; border-bottom: 3px solid transparent; }
+        nav button:hover, nav button.active { background-color: var(--light); color: var(--secondary); border-bottom: 3px solid var(--accent); }
+
+        /* Container */
+        .container { max-width: 900px; margin: 20px auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .section { display: none; animation: fadeIn 0.4s; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Forms & Inputs */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--primary); }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; box-sizing: border-box; }
+        textarea { resize: vertical; min-height: 80px; }
+        
+        /* Buttons */
+        .btn-action { background-color: var(--secondary); color: white; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem; width: 100%; font-weight: bold; transition: 0.3s; }
+        .btn-action:hover { background-color: var(--primary); }
+        .btn-secondary { background-color: #95a5a6; margin-top: 10px; }
+
+        /* Cards & Tables */
+        .card { border: 1px solid #eee; padding: 15px; margin-bottom: 15px; border-radius: 8px; border-left: 5px solid var(--secondary); background: #fafafa; }
+        .card h3 { margin-top: 0; color: var(--primary); font-size: 1.2rem; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: var(--primary); color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+
+        /* Output Area */
+        #outputArea { background: #fff; padding: 20px; border: 1px dashed var(--primary); border-radius: 8px; margin-top: 20px; white-space: pre-wrap; font-family: monospace; display: none; }
+
+        /* Footer */
+        footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #7f8c8d; margin-top: 20px; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>📚 Generator Kurikulum Merdeka</h1>
+    <p>Platform Digital Pendamping Guru SDN 1 Segeri</p>
+    <div class="school-info">
+        UPT SD Negeri 1 Segeri | Jl. A. Page, Bontomatene, Segeri, Pangkep<br>
+        Pendekatan: Deep Learning (Mindful-Meaningful-Joyful)
+    </div>
+</header>
+
+<nav>
+    <button onclick="showSection('dashboard')" class="active">Dashboard</button>
+    <button onclick="showSection('setup')">Setup Kelas & Konteks</button>
+    <button onclick="showSection('planner')">Perencana Pembelajaran</button>
+    <button onclick="showSection('generator')">Generator Modul/RPP</button>
+</nav>
+
+<div class="container">
+    
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="section active">
+        <h2>Selamat Datang, Bapak/Ibu Guru!</h2>
+        <p>Aplikasi ini dirancang untuk membantu penyusunan perangkat ajar (Modul Ajar, RPP, Prota) secara cepat, terstruktur, dan kontekstual sesuai kebutuhan SDN 1 Segeri.</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="card">
+                <h3> Status Kalender</h3>
+                <p><strong>Semester:</strong> Ganjil 2025/2026</p>
+                <p><strong>Mulai Efektif:</strong> 23 Juli 2025 (Pasca MPLS)</p>
+                <p><strong>Hari Efektif Minggu Ini:</strong> Rabu & Kamis</p>
+            </div>
+            <div class="card">
+                <h3> Profil Kelas 5</h3>
+                <p><strong>Total Siswa:</strong> 20 Orang</p>
+                <p><strong>Kategori:</strong> 7 Tinggi, 7 Sedang, 6 Perlu Bantuan</p>
+                <p><strong>Fase:</strong> C</p>
+            </div>
+        </div>
+        
+        <div class="card" style="border-left-color: var(--accent);">
+            <h3>💡 Tips Deep Learning Hari Ini</h3>
+            <p>"Mulailah dengan pertanyaan pemantik yang menghubungkan materi dengan kehidupan nelayan/petani di sekitar sekolah sebelum masuk ke teori."</p>
+        </div>
+    </div>
+
+    <!-- SETUP KELAS & KONTEKS -->
+    <div id="setup" class="section">
+        <h2>⚙️ Setup Data Kelas & Konteks Lokal</h2>
+        <p>Data ini akan digunakan otomatis saat membuat Modul Ajar.</p>
+        
+        <div class="form-group">
+            <label>Nama Guru:</label>
+            <input type="text" id="teacherName" value="Salim, S.Pd">
+        </div>
+
+        <div class="form-group">
+            <label>Kondisi Siswa (Deskripsi Umum):</label>
+            <textarea id="studentCondition" placeholder="Contoh: Sebagian besar siswa antusias belajar kelompok, namun 6 siswa memerlukan pendampingan intensif dalam membaca soal cerita...">Sebagian besar siswa aktif secara kinestetik. Terdapat 6 siswa kategori 'Perlu Bantuan' yang membutuhkan scaffolding visual. Siswa sangat akrab dengan konteks laut dan pasar.</textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Kondisi Geografis & Lingkungan Sekolah:</label>
+            <textarea id="geoCondition" placeholder="Contoh: Sekolah terletak di wilayah pesisir dekat pelabuhan perikanan. Akses internet cukup stabil. Banyak potensi lokal seperti tambak dan anyaman tikar.">Sekolah berada di wilayah pesisir Kecamatan Segeri, dekat dengan area pelelangan ikan dan permukiman nelayan. Lingkungan kaya akan aktivitas ekonomi maritim dan pertanian lahan basah. Cuaca cenderung panas dan berangin.</textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Konteks Lokal Utama untuk Pembelajaran:</label>
+            <input type="text" id="localContext" value="Nelayan, Pasar Ikan, Tambak, Anyaman Tikar, Menara Pengawas">
+        </div>
+
+        <button class="btn-action" onclick="saveSetup()">💾 Simpan Data Konteks</button>
+    </div>
+
+    <!-- PERENCANA PEMBELAJARAN -->
+    <div id="planner" class="section">
+        <h2>🗓️ Perencana Jadwal & Topik</h2>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+                <label>Mata Pelajaran:</label>
+                <select id="subjectSelect">
+                    <option value="Matematika">Matematika</option>
+                    <option value="IPAS">IPAS (Ilmu Pengetahuan Alam & Sosial)</option>
+                    <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                    <option value="Pendidikan Pancasila">Pendidikan Pancasila</option>
+                    <option value="Seni Budaya">Seni Budaya</option>
+                    <option value="PJOK">PJOK</option>
+                    <option value="Bahasa Inggris">Bahasa Inggris</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Tanggal Mulai Pembelajaran:</label>
+                <input type="date" id="startDate" value="2025-07-23">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Topik / Bab:</label>
+            <input type="text" id="topicInput" placeholder="Contoh: Bilangan Desimal atau Gaya dan Gerak">
+        </div>
+
+        <div class="form-group">
+            <label>Alokasi Waktu (JP):</label>
+            <input type="number" id="jpInput" value="7" placeholder="Total JP untuk topik ini">
+        </div>
+
+        <div class="card">
+            <h3> Pratinjau Jadwal (Otomatis)</h3>
+            <table id="schedulePreview">
+                <thead>
+                    <tr>
+                        <th>Hari/Tanggal</th>
+                        <th>Kegiatan Utama</th>
+                        <th>JP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Rabu, 23 Juli 2025</td>
+                        <td>Pembelajaran Inti (Sesi 1)</td>
+                        <td>3 JP</td>
+                    </tr>
+                    <tr>
+                        <td>Kamis, 24 Juli 2025</td>
+                        <td>Pembelajaran Inti (Sesi 2)</td>
+                        <td>4 JP</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">*Jadwal disesuaikan dengan kalender efektif SDN 1 Segeri (Rabu & Kamis).</p>
+        </div>
+    </div>
+
+    <!-- GENERATOR -->
+    <div id="generator" class="section">
+        <h2>🚀 Generator Perangkat Ajar</h2>
+        <p>Klik tombol di bawah untuk membuat draf Modul Ajar/RPP berdasarkan data yang sudah diinput.</p>
+        
+        <button class="btn-action" onclick="generateModule()">✨ Buat Draf Modul Ajar & RPP</button>
+
+        <div id="outputArea"></div>
+        
+        <button class="btn-action btn-secondary" onclick="copyToClipboard()" id="copyBtn" style="display:none;"> Salin Teks ke Clipboard</button>
+    </div>
+
+</div>
+
+<footer>
+    &copy; 2025 UPT SD Negeri 1 Segeri. Developed for Kurikulum Merdeka + Deep Learning.
+</footer>
+
+<script>
+    function showSection(sectionId) {
+        document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    function saveSetup() {
+        alert("Data Konteks Kelas & Geografis berhasil disimpan!");
+        showSection('planner');
+    }
+
+    function generateModule() {
+        const subject = document.getElementById('subjectSelect').value;
+        const topic = document.getElementById('topicInput').value || "[Topik Belum Diisi]";
+        const date = document.getElementById('startDate').value;
+        const teacher = document.getElementById('teacherName').value;
+        const studentCond = document.getElementById('studentCondition').value;
+        const geoCond = document.getElementById('geoCondition').value;
+        const localCtx = document.getElementById('localContext').value;
+
+        if(topic === "[Topik Belum Diisi]") {
+            alert("Mohon isi Topik/Bab terlebih dahulu di menu Perencana.");
+            return;
+        }
+
+        const output = `
+# MODUL AJAR & RPP HARIAN (DRAFT OTOMATIS)
+**Satuan Pendidikan:** UPT SD Negeri 1 Segeri
+**Guru:** ${teacher}
+**Mata Pelajaran:** ${subject}
+**Topik:** ${topic}
+**Tanggal Mulai:** ${new Date(date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+
+## 1. ANALISIS KONTEKS & PESERTA DIDIK
+**Kondisi Siswa:**
+${studentCond}
+
+**Kondisi Geografis & Lingkungan:**
+${geoCond}
+
+**Integrasi Konteks Lokal:**
+Pembelajaran akan mengintegrasikan kearifan lokal: ${localCtx}.
+
+## 2. CAPAIAN PEMBELAJARAN (CP) FASE C
+*(Silakan sesuaikan dengan CP spesifik mata pelajaran ${subject})*
+Peserta didik mampu memahami konsep dasar terkait ${topic} dan menerapkannya dalam kehidupan sehari-hari di lingkungan sekitar.
+
+## 3. TUJUAN PEMBELAJARAN (TP)
+1. Peserta didik dapat menganalisis konsep ${topic} dengan tepat.
+2. Peserta didik dapat menerapkan konsep ${topic} dalam studi kasus lokal (${localCtx}).
+3. Peserta didik dapat menyajikan hasil pemikiran secara kreatif dan kolaboratif.
+
+## 4. SKENARIO DEEP LEARNING (MMJ)
+### A. Mindful (Berkesadaran)
+- **Pertanyaan Pemantik:** "Bagaimana hubungan antara ${topic} dengan kegiatan nelayan/petani di sekitar sekolah kita?"
+- **Apersepsi:** Mengamati objek nyata di lingkungan sekolah/segeri.
+
+### B. Meaningful (Bermakna)
+- **Aktivitas Inti:** Diskusi kelompok heterogen memecahkan masalah nyata berbasis ${localCtx}.
+- **Diferensiasi:** 
+  - *Butuh Bantuan:* Menggunakan alat peraga visual konkret.
+  - *Sedang:* Latihan terstruktur dengan bimbingan teman.
+  - *Tinggi:* Proyek inquiry terbuka menciptakan solusi baru.
+
+### C. Joyful (Menggembirakan)
+- **Game/Simulasi:** Permainan peran atau simulasi aktivitas lokal terkait materi.
+- **Apresiasi:** Refleksi positif atas usaha setiap siswa.
+
+## 5. ASESMEN
+- **Diagnostik:** Tanya jawab awal tentang pengetahuan awal siswa.
+- **Formatif:** Observasi kinerja saat diskusi kelompok dan LKPD.
+- **Sumatif:** Tes tertulis/Proyek akhir bab.
+
+---
+*Draf ini dihasilkan secara otomatis oleh Aplikasi Generator SDN 1 Segeri. Mohon dilakukan penyesuaian detail teknis sebelum dicetak.*
+        `;
+
+        const outputDiv = document.getElementById('outputArea');
+        outputDiv.style.display = 'block';
+        outputDiv.textContent = output;
+        document.getElementById('copyBtn').style.display = 'inline-block';
+    }
+
+    function copyToClipboard() {
+        const text = document.getElementById('outputArea').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Teks berhasil disalin! Silakan paste ke Microsoft Word atau Google Docs.");
+        });
+    }
+</script>
+
+</body>
+</html>
