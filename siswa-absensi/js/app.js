@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Load initial data
     await loadSiswaList();
     await loadGuruData();
+    await loadJadwalList();
     updateStorageInfo();
     
     // Set default dates to today
@@ -240,6 +241,121 @@ function resetForm() {
     document.getElementById('mapel').value = '';
     document.getElementById('studentGrid').innerHTML = '';
     siswaList = [];
+}
+
+// Reset journal form
+function resetJurnal() {
+    document.getElementById('jurnalTanggal').value = '';
+    document.getElementById('jurnalKelas').value = '';
+    document.getElementById('jurnalMapel').value = '';
+    document.getElementById('materi').value = '';
+    document.getElementById('kompetensi').value = '';
+    document.getElementById('metode').value = '';
+    document.getElementById('media').value = '';
+    document.getElementById('catatan').value = '';
+    document.getElementById('kendala').value = '';
+    document.getElementById('tindakLanjut').value = '';
+}
+
+// Save schedule
+async function simpanJadwal() {
+    const jadwalData = {
+        hari: document.getElementById('jadwalHari').value,
+        kelas: document.getElementById('jadwalKelas').value,
+        mapel: document.getElementById('jadwalMapel').value,
+        jamMulai: document.getElementById('jadwalJamMulai').value,
+        jamSelesai: document.getElementById('jadwalJamSelesai').value,
+        ruang: document.getElementById('jadwalRuang').value,
+        timestamp: new Date().toISOString()
+    };
+    
+    // Validation
+    if (!jadwalData.hari || !jadwalData.kelas || !jadwalData.mapel) {
+        showNotification('Mohon lengkapi hari, kelas, dan mata pelajaran', 'error');
+        return;
+    }
+    
+    if (!jadwalData.jamMulai || !jadwalData.jamSelesai) {
+        showNotification('Mohon lengkapi jam mulai dan jam selesai', 'error');
+        return;
+    }
+    
+    try {
+        await db.addJadwal(jadwalData);
+        showNotification('Jadwal mengajar berhasil disimpan', 'success');
+        resetJadwal();
+        loadJadwalList();
+    } catch (error) {
+        console.error('Error saving schedule:', error);
+        showNotification('Gagal menyimpan jadwal', 'error');
+    }
+}
+
+// Reset schedule form
+function resetJadwal() {
+    document.getElementById('jadwalHari').value = '';
+    document.getElementById('jadwalKelas').value = '';
+    document.getElementById('jadwalMapel').value = '';
+    document.getElementById('jadwalJamMulai').value = '';
+    document.getElementById('jadwalJamSelesai').value = '';
+    document.getElementById('jadwalRuang').value = '';
+}
+
+// Load schedule list
+async function loadJadwalList() {
+    try {
+        const jadwals = await db.getAllJadwal();
+        const jadwalGrid = document.getElementById('jadwalGrid');
+        
+        if (jadwals.length === 0) {
+            jadwalGrid.innerHTML = '<div class="empty-state"><p>📅 Belum ada jadwal tersimpan</p></div>';
+            return;
+        }
+        
+        // Group by day
+        const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        let html = '';
+        
+        days.forEach(day => {
+            const dayJadwals = jadwals.filter(j => j.hari === day);
+            if (dayJadwals.length > 0) {
+                html += `<div class="jadwal-day"><h4>${day}</h4>`;
+                dayJadwals.forEach(jadwal => {
+                    html += `
+                        <div class="jadwal-item">
+                            <div class="jadwal-header">
+                                <span class="jadwal-time">${jadwal.jamMulai} - ${jadwal.jamSelesai}</span>
+                                <button class="btn-delete" onclick="hapusJadwal(${jadwal.id})">🗑️</button>
+                            </div>
+                            <div class="jadwal-details">
+                                <strong>${jadwal.kelas}</strong> - ${jadwal.mapel}
+                                <br><small>📍 ${jadwal.ruang || '-'}</small>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+        });
+        
+        jadwalGrid.innerHTML = html;
+    } catch (error) {
+        console.error('Error loading schedule:', error);
+    }
+}
+
+// Delete schedule
+async function hapusJadwal(id) {
+    if (confirm('Yakin ingin menghapus jadwal ini?')) {
+        try {
+            await db.deleteJadwal(id);
+            showNotification('Jadwal berhasil dihapus', 'success');
+            loadJadwalList();
+        } catch (error) {
+            console.error('Error deleting schedule:', error);
+            showNotification('Gagal menghapus jadwal', 'error');
+        }
+    }
 }
 
 // Save journal

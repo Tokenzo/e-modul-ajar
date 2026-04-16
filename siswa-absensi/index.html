@@ -22,6 +22,7 @@
         <!-- Navigation -->
         <nav class="navigation">
             <button class="nav-btn active" data-tab="absensi">📋 Absensi</button>
+            <button class="nav-btn" data-tab="jadwal">📅 Jadwal Mengajar</button>
             <button class="nav-btn" data-tab="jurnal">📖 Jurnal Mengajar</button>
             <button class="nav-btn" data-tab="laporan">📊 Laporan</button>
             <button class="nav-btn" data-tab="pengaturan">⚙️ Pengaturan</button>
@@ -78,6 +79,79 @@
                     <div class="action-buttons">
                         <button class="btn btn-primary" onclick="simpanAbsensi()">💾 Simpan Absensi</button>
                         <button class="btn btn-secondary" onclick="resetForm()">🔄 Reset</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab Jadwal Mengajar -->
+            <section id="jadwal" class="tab-content">
+                <div class="card">
+                    <h2>📅 Input Jadwal Mengajar</h2>
+                    <div class="form-group">
+                        <label for="jadwalHari">Hari:</label>
+                        <select id="jadwalHari">
+                            <option value="">Pilih Hari</option>
+                            <option value="Senin">Senin</option>
+                            <option value="Selasa">Selasa</option>
+                            <option value="Rabu">Rabu</option>
+                            <option value="Kamis">Kamis</option>
+                            <option value="Jumat">Jumat</option>
+                            <option value="Sabtu">Sabtu</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="jadwalKelas">Kelas:</label>
+                        <select id="jadwalKelas">
+                            <option value="">Pilih Kelas</option>
+                            <option value="Kelas 1">Kelas 1</option>
+                            <option value="Kelas 2">Kelas 2</option>
+                            <option value="Kelas 3">Kelas 3</option>
+                            <option value="Kelas 4">Kelas 4</option>
+                            <option value="Kelas 5">Kelas 5</option>
+                            <option value="Kelas 6">Kelas 6</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="jadwalMapel">Mata Pelajaran:</label>
+                        <select id="jadwalMapel">
+                            <option value="">Pilih Mapel</option>
+                            <option value="Pendidikan Pancasila">Pendidikan Pancasila</option>
+                            <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                            <option value="Matematika">Matematika</option>
+                            <option value="IPAS">IPAS (Ilmu Pengetahuan Alam & Sosial)</option>
+                            <option value="Seni Musik">Seni Musik</option>
+                            <option value="Seni Rupa">Seni Rupa</option>
+                            <option value="Seni Tari">Seni Tari</option>
+                            <option value="Seni Teater">Seni Teater</option>
+                            <option value="PJOK">PJOK (Pendidikan Jasmani, Olahraga & Kesehatan)</option>
+                            <option value="Bahasa Inggris">Bahasa Inggris</option>
+                            <option value="Bahasa Daerah">Bahasa Daerah</option>
+                            <option value="Muatan Lokal">Muatan Lokal</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="jadwalJamMulai">Jam Mulai:</label>
+                        <input type="time" id="jadwalJamMulai">
+                    </div>
+                    <div class="form-group">
+                        <label for="jadwalJamSelesai">Jam Selesai:</label>
+                        <input type="time" id="jadwalJamSelesai">
+                    </div>
+                    <div class="form-group">
+                        <label for="jadwalRuang">Ruang/Lokasi:</label>
+                        <input type="text" id="jadwalRuang" placeholder="Contoh: Ruang Kelas 1, Lapangan, dll">
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="simpanJadwal()">💾 Simpan Jadwal</button>
+                        <button class="btn btn-secondary" onclick="resetJadwal()">🔄 Reset</button>
+                    </div>
+
+                    <div class="jadwal-list" id="jadwalList">
+                        <h3>Jadwal Tersimpan</h3>
+                        <div class="jadwal-grid" id="jadwalGrid">
+                            <!-- Jadwal items will be generated here -->
+                        </div>
                     </div>
                 </div>
             </section>
