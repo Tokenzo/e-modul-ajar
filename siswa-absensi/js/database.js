@@ -53,6 +53,14 @@ class DatabaseManager {
                     db.createObjectStore('guru', { keyPath: 'id' });
                 }
 
+                // Object Store untuk Jadwal
+                if (!db.objectStoreNames.contains('jadwal')) {
+                    const jadwalStore = db.createObjectStore('jadwal', { keyPath: 'id', autoIncrement: true });
+                    jadwalStore.createIndex('hari', 'hari', { unique: false });
+                    jadwalStore.createIndex('kelas', 'kelas', { unique: false });
+                    jadwalStore.createIndex('mapel', 'mapel', { unique: false });
+                }
+
                 // Object Store untuk Settings
                 if (!db.objectStoreNames.contains('settings')) {
                     db.createObjectStore('settings', { keyPath: 'key' });
@@ -226,6 +234,40 @@ class DatabaseManager {
         });
     }
 
+    // CRUD Operations untuk Jadwal
+    async addJadwal(jadwal) {
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['jadwal'], 'readwrite');
+            const store = transaction.objectStore('jadwal');
+            const request = store.add(jadwal);
+
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    async getAllJadwal() {
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['jadwal'], 'readonly');
+            const store = transaction.objectStore('jadwal');
+            const request = store.getAll();
+
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+        });
+    }
+
+    async deleteJadwal(id) {
+        return new Promise((resolve, reject) => {
+            const transaction = this.db.transaction(['jadwal'], 'readwrite');
+            const store = transaction.objectStore('jadwal');
+            const request = store.delete(id);
+
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error);
+        });
+    }
+
     // CRUD Operations untuk Data Guru
     async saveDataGuru(guru) {
         return new Promise((resolve, reject) => {
@@ -255,6 +297,7 @@ class DatabaseManager {
             siswa: await this.getAllSiswa(),
             absensi: await this.getAllAbsensi(),
             jurnal: await this.getAllJurnal(),
+            jadwal: await this.getAllJadwal(),
             guru: await this.getDataGuru(),
             timestamp: new Date().toISOString()
         };
@@ -262,12 +305,13 @@ class DatabaseManager {
     }
 
     async restoreData(data) {
-        const transaction = this.db.transaction(['siswa', 'absensi', 'jurnal', 'guru'], 'readwrite');
+        const transaction = this.db.transaction(['siswa', 'absensi', 'jurnal', 'jadwal', 'guru'], 'readwrite');
         
         // Clear existing data
         transaction.objectStore('siswa').clear();
         transaction.objectStore('absensi').clear();
         transaction.objectStore('jurnal').clear();
+        transaction.objectStore('jadwal').clear();
         transaction.objectStore('guru').clear();
 
         // Restore siswa
@@ -291,6 +335,13 @@ class DatabaseManager {
             }
         }
 
+        // Restore jadwal
+        if (data.jadwal) {
+            for (const jadwal of data.jadwal) {
+                transaction.objectStore('jadwal').add(jadwal);
+            }
+        }
+
         // Restore guru
         if (data.guru) {
             transaction.objectStore('guru').put(data.guru);
@@ -305,11 +356,12 @@ class DatabaseManager {
     // Clear all data
     async clearAllData() {
         return new Promise((resolve, reject) => {
-            const transaction = this.db.transaction(['siswa', 'absensi', 'jurnal', 'guru'], 'readwrite');
+            const transaction = this.db.transaction(['siswa', 'absensi', 'jurnal', 'jadwal', 'guru'], 'readwrite');
             
             transaction.objectStore('siswa').clear();
             transaction.objectStore('absensi').clear();
             transaction.objectStore('jurnal').clear();
+            transaction.objectStore('jadwal').clear();
             transaction.objectStore('guru').clear();
 
             transaction.oncomplete = () => resolve();

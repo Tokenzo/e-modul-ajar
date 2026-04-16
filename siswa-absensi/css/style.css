@@ -310,6 +310,82 @@ body {
     color: #999;
 }
 
+/* Jadwal Styles */
+.jadwal-list {
+    margin-top: 20px;
+}
+
+.jadwal-grid {
+    display: grid;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.jadwal-day {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #667eea;
+}
+
+.jadwal-day h4 {
+    color: #667eea;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.jadwal-item {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.jadwal-item:last-child {
+    margin-bottom: 0;
+}
+
+.jadwal-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.jadwal-time {
+    font-weight: 600;
+    color: #667eea;
+    font-size: 14px;
+}
+
+.jadwal-details {
+    flex: 1;
+    margin-left: 15px;
+    font-size: 14px;
+}
+
+.jadwal-details strong {
+    color: #333;
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.3s ease;
+}
+
+.btn-delete:hover {
+    background: #c82333;
+}
+
 .report-table {
     width: 100%;
     border-collapse: collapse;
