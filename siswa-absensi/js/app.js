@@ -430,6 +430,10 @@ async function generateLaporan() {
             data = await db.getJurnalByFilter(filters);
         }
         
+        // Store data for export functions
+        currentReportData = data;
+        currentReportType = type;
+        
         if (data.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
@@ -521,49 +525,177 @@ function renderJournalReport(data, container) {
     container.innerHTML = html;
 }
 
-// Export to Excel (CSV format)
+// Export to Excel using XLSX library
+let currentReportData = null;
+let currentReportType = null;
+
 function exportToExcel() {
-    const table = document.querySelector('.report-table');
+    const type = document.getElementById('laporanType').value;
     
-    if (!table) {
+    if (!currentReportData || currentReportData.length === 0) {
         showNotification('Generate laporan terlebih dahulu', 'warning');
         return;
     }
     
-    let csv = [];
-    const rows = table.querySelectorAll('tr');
+    let data = [];
+    let filename = `Laporan_${type}_${new Date().toISOString().split('T')[0]}.xlsx`;
     
-    rows.forEach(row => {
-        const cols = row.querySelectorAll('th, td');
-        const rowData = [];
-        cols.forEach(col => {
-            rowData.push('"' + col.innerText.replace(/"/g, '""') + '"');
+    if (type === 'absensi') {
+        // Prepare attendance data for Excel
+        data = [['Tanggal', 'Kelas', 'Mata Pelajaran', 'NIS', 'Nama Siswa', 'Status', 'Keterangan']];
+        currentReportData.forEach(record => {
+            const keterangan = record.status === 'H' ? 'Hadir' : 
+                              record.status === 'S' ? 'Sakit' : 
+                              record.status === 'I' ? 'Izin' : 'Alpha';
+            data.push([
+                record.tanggal,
+                record.kelas,
+                record.mapel,
+                record.nis,
+                record.nama,
+                record.status,
+                keterangan
+            ]);
         });
-        csv.push(rowData.join(','));
-    });
+    } else {
+        // Prepare journal data for Excel
+        data = [['Tanggal', 'Kelas', 'Mata Pelajaran', 'Materi', 'Kompetensi', 'Metode', 'Media', 'Catatan', 'Kendala', 'Tindak Lanjut']];
+        currentReportData.forEach(record => {
+            data.push([
+                record.tanggal,
+                record.kelas,
+                record.mapel,
+                record.materi,
+                record.kompetensi,
+                record.metode,
+                record.media,
+                record.catatan,
+                record.kendala,
+                record.tindakLanjut
+            ]);
+        });
+    }
     
-    const csvContent = csv.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `laporan_${new Date().getTime()}.csv`;
-    link.click();
+    // Create workbook and worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(data);
     
-    showNotification('Laporan berhasil diexport', 'success');
+    // Set column widths
+    const maxWidth = 20;
+    ws['!cols'] = data[0].map(() => ({ wch: maxWidth }));
+    
+    // Style header row
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+        const address = XLSX.utils.encode_col(C) + "1";
+        if (!ws[address]) continue;
+        ws[address].s = {
+            font: { bold: true, color: { rgb: "FFFFFF" } },
+            fill: { fgColor: { rgb: "4CAF50" } },
+            alignment: { horizontal: "center", vertical: "center" }
+        };
+    }
+    
+    XLSX.utils.book_append_sheet(wb, ws, 'Laporan');
+    XLSX.writeFile(wb, filename);
+    
+    showNotification('Laporan berhasil diexport ke Excel!', 'success');
 }
 
-// Export to PDF
+// Export to PDF using jsPDF library
 function exportToPDF() {
-    const table = document.querySelector('.report-table');
+    const type = document.getElementById('laporanType').value;
     
-    if (!table) {
+    if (!currentReportData || currentReportData.length === 0) {
         showNotification('Generate laporan terlebih dahulu', 'warning');
         return;
     }
     
-    // Simple print functionality as PDF alternative
-    window.print();
-    showNotification('Gunakan Print dialog untuk save as PDF', 'info');
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('l', 'mm', 'a4'); // Landscape mode
+    
+    // Title
+    const title = type === 'absensi' ? 'LAPORAN ABSENSI SISWA' : 'LAPORAN JURNAL MENGAJAR';
+    const subtitle = 'Sekolah Dasar - Kurikulum Merdeka';
+    
+    doc.setFontSize(16);
+    doc.text(title, 148, 20, { align: 'center' });
+    doc.setFontSize(12);
+    doc.text(subtitle, 148, 28, { align: 'center' });
+    
+    // Date info
+    const dari = document.getElementById('laporanDari').value;
+    const sampai = document.getElementById('laporanSampai').value;
+    doc.setFontSize(10);
+    doc.text(`Periode: ${dari} s/d ${sampai}`, 148, 36, { align: 'center' });
+    
+    // Prepare table data
+    let headers = [];
+    let rows = [];
+    
+    if (type === 'absensi') {
+        headers = [['Tanggal', 'Kelas', 'Mapel', 'NIS', 'Nama', 'Status', 'Keterangan']];
+        currentReportData.forEach(record => {
+            const keterangan = record.status === 'H' ? 'Hadir' : 
+                              record.status === 'S' ? 'Sakit' : 
+                              record.status === 'I' ? 'Izin' : 'Alpha';
+            rows.push([
+                record.tanggal,
+                record.kelas,
+                record.mapel,
+                record.nis,
+                record.nama,
+                record.status,
+                keterangan
+            ]);
+        });
+    } else {
+        headers = [['Tanggal', 'Kelas', 'Mapel', 'Materi', 'Metode', 'Catatan']];
+        currentReportData.forEach(record => {
+            rows.push([
+                record.tanggal,
+                record.kelas,
+                record.mapel,
+                record.materi.substring(0, 50) + (record.materi.length > 50 ? '...' : ''),
+                record.metode,
+                record.catatan.substring(0, 50) + (record.catatan.length > 50 ? '...' : '')
+            ]);
+        });
+    }
+    
+    // Generate table
+    doc.autoTable({
+        head: headers,
+        body: rows,
+        startY: 42,
+        theme: 'grid',
+        headStyles: { fillColor: [76, 175, 80], textColor: 255, fontSize: 9 },
+        bodyStyles: { fontSize: 8 },
+        styles: { cellPadding: 2, overflow: 'linebreak' },
+        columnStyles: {
+            0: { cellWidth: 25 },
+            1: { cellWidth: 20 },
+            2: { cellWidth: 35 },
+            3: { cellWidth: 20 },
+            4: { cellWidth: 40 },
+            5: { cellWidth: 15 },
+            6: { cellWidth: 25 }
+        }
+    });
+    
+    // Add footer with page numbers
+    const pageCount = doc.internal.getNumberOfPages();
+    doc.setFontSize(8);
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.text(`Halaman ${i} dari ${pageCount}`, 148, 290, { align: 'center' });
+    }
+    
+    // Save PDF
+    const filename = `Laporan_${type}_${new Date().toISOString().split('T')[0]}.pdf`;
+    doc.save(filename);
+    
+    showNotification('Laporan berhasil diexport ke PDF!', 'success');
 }
 
 // Save teacher data
@@ -859,4 +991,68 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js')
         .then(() => console.log('Service Worker registered'))
         .catch(err => console.error('Service Worker registration failed:', err));
+}
+
+// Save new journal format (5 Poin Utama)
+async function simpanJurnalBaru() {
+    const jurnalData = {
+        tanggal: document.getElementById('jurnalTanggal').value,
+        kelas: document.getElementById('jurnalKelas').value,
+        mapel: document.getElementById('jurnalMapel').value,
+        topikMateri: document.getElementById('topikMateri').value,
+        metodeMedia: document.getElementById('metodeMedia').value,
+        ringkasanAlur: document.getElementById('ringkasanAlur').value,
+        hadirCount: parseInt(document.getElementById('hadirCount').value) || 0,
+        totalSiswa: parseInt(document.getElementById('totalSiswa').value) || 0,
+        sakitCount: parseInt(document.getElementById('sakitCount').value) || 0,
+        izinCount: parseInt(document.getElementById('izinCount').value) || 0,
+        alphaCount: parseInt(document.getElementById('alphaCount').value) || 0,
+        kendalaUtama: document.getElementById('kendalaUtama').value,
+        jenisPenilaian: document.getElementById('jenisPenilaian').value,
+        tingkatPenguasaan: document.getElementById('tingkatPenguasaan').value,
+        catatanKeberhasilan: document.getElementById('catatanKeberhasilan').value,
+        rencanaPerbaikan: document.getElementById('rencanaPerbaikan').value,
+        timestamp: new Date().toISOString()
+    };
+    
+    // Validation
+    if (!jurnalData.tanggal || !jurnalData.kelas || !jurnalData.mapel) {
+        showNotification('Mohon lengkapi tanggal, kelas, dan mata pelajaran', 'error');
+        return;
+    }
+    
+    if (!jurnalData.topikMateri) {
+        showNotification('Mohon isi topik materi', 'error');
+        return;
+    }
+    
+    try {
+        await db.addJurnal(jurnalData);
+        showNotification('Jurnal mengajar berhasil disimpan', 'success');
+        resetJurnalBaru();
+    } catch (error) {
+        console.error('Error saving journal:', error);
+        showNotification('Gagal menyimpan jurnal', 'error');
+    }
+}
+
+// Reset new journal form
+function resetJurnalBaru() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('jurnalTanggal').value = today;
+    document.getElementById('jurnalKelas').value = '';
+    document.getElementById('jurnalMapel').value = '';
+    document.getElementById('topikMateri').value = '';
+    document.getElementById('metodeMedia').value = '';
+    document.getElementById('ringkasanAlur').value = '';
+    document.getElementById('hadirCount').value = '';
+    document.getElementById('totalSiswa').value = '';
+    document.getElementById('sakitCount').value = '';
+    document.getElementById('izinCount').value = '';
+    document.getElementById('alphaCount').value = '';
+    document.getElementById('kendalaUtama').value = '';
+    document.getElementById('jenisPenilaian').value = '';
+    document.getElementById('tingkatPenguasaan').value = '';
+    document.getElementById('catatanKeberhasilan').value = '';
+    document.getElementById('rencanaPerbaikan').value = '';
 }

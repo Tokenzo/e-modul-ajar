@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Absensi & Jurnal Mengajar Siswa</title>
+    <title>E-Jurnal & Absensi Guru SD - Kurikulum Merdeka</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4CAF50">
+    <!-- Library untuk Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
@@ -159,85 +164,142 @@
             <!-- Tab Jurnal Mengajar -->
             <section id="jurnal" class="tab-content">
                 <div class="card">
-                    <h2>📖 Jurnal Mengajar Canggih</h2>
-                    <div class="form-group">
-                        <label for="jurnalTanggal">Tanggal:</label>
-                        <input type="date" id="jurnalTanggal">
+                    <h2>📖 Jurnal Mengajar - 5 Poin Utama</h2>
+                    <p class="text-sm text-gray-600 mb-4">Catatan harian cepat dan ringkas untuk efektivitas pembelajaran</p>
+                    
+                    <!-- 1. Identitas Sesi -->
+                    <div class="form-section">
+                        <h3 class="section-title">1️⃣ Identitas Sesi</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="jurnalTanggal">Tanggal:</label>
+                                <input type="date" id="jurnalTanggal">
+                            </div>
+                            <div class="form-group">
+                                <label for="jurnalKelas">Kelas:</label>
+                                <select id="jurnalKelas">
+                                    <option value="">Pilih Kelas</option>
+                                    <option value="Kelas 1">Kelas 1</option>
+                                    <option value="Kelas 2">Kelas 2</option>
+                                    <option value="Kelas 3">Kelas 3</option>
+                                    <option value="Kelas 4">Kelas 4</option>
+                                    <option value="Kelas 5">Kelas 5</option>
+                                    <option value="Kelas 6">Kelas 6</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="jurnalMapel">Mata Pelajaran:</label>
+                                <select id="jurnalMapel">
+                                    <option value="">Pilih Mapel</option>
+                                    <option value="Pendidikan Pancasila">Pendidikan Pancasila</option>
+                                    <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                                    <option value="Matematika">Matematika</option>
+                                    <option value="IPAS">IPAS (Ilmu Pengetahuan Alam & Sosial)</option>
+                                    <option value="Seni Musik">Seni Musik</option>
+                                    <option value="Seni Rupa">Seni Rupa</option>
+                                    <option value="Seni Tari">Seni Tari</option>
+                                    <option value="Seni Teater">Seni Teater</option>
+                                    <option value="PJOK">PJOK</option>
+                                    <option value="Bahasa Inggris">Bahasa Inggris</option>
+                                    <option value="Bahasa Daerah">Bahasa Daerah</option>
+                                    <option value="Muatan Lokal">Muatan Lokal</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="topikMateri">Topik Materi:</label>
+                                <input type="text" id="topikMateri" placeholder="Cth: Pecahan / Norma / Sistem Peredaran Darah">
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="jurnalKelas">Kelas:</label>
-                        <select id="jurnalKelas">
-                            <option value="">Pilih Kelas</option>
-                            <option value="Kelas 1">Kelas 1</option>
-                            <option value="Kelas 2">Kelas 2</option>
-                            <option value="Kelas 3">Kelas 3</option>
-                            <option value="Kelas 4">Kelas 4</option>
-                            <option value="Kelas 5">Kelas 5</option>
-                            <option value="Kelas 6">Kelas 6</option>
-                        </select>
+
+                    <!-- 2. Kegiatan Inti -->
+                    <div class="form-section">
+                        <h3 class="section-title">2️⃣ Kegiatan Inti</h3>
+                        <div class="form-group">
+                            <label for="metodeMedia">Metode & Media:</label>
+                            <textarea id="metodeMedia" rows="2" placeholder="Cth: Project-Based Learning menggunakan papan tulis interaktif dan data lapangan dari internet."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="ringkasanAlur">Ringkasan Alur Pembelajaran:</label>
+                            <textarea id="ringkasanAlur" rows="3" placeholder="Jelaskan proses inti. Cth: Siswa menganalisis studi kasus, bekerja dalam kelompok 4 orang untuk menyelesaikan masalah X, dan mempresentasikan solusi mereka."></textarea>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="jurnalMapel">Mata Pelajaran:</label>
-                        <select id="jurnalMapel">
-                            <option value="">Pilih Mapel</option>
-                            <option value="Pendidikan Pancasila">Pendidikan Pancasila</option>
-                            <option value="Bahasa Indonesia">Bahasa Indonesia</option>
-                            <option value="Matematika">Matematika</option>
-                            <option value="IPAS">IPAS (Ilmu Pengetahuan Alam & Sosial)</option>
-                            <option value="Seni Musik">Seni Musik</option>
-                            <option value="Seni Rupa">Seni Rupa</option>
-                            <option value="Seni Tari">Seni Tari</option>
-                            <option value="Seni Teater">Seni Teater</option>
-                            <option value="PJOK">PJOK (Pendidikan Jasmani, Olahraga & Kesehatan)</option>
-                            <option value="Bahasa Inggris">Bahasa Inggris</option>
-                            <option value="Bahasa Daerah">Bahasa Daerah</option>
-                            <option value="Muatan Lokal">Muatan Lokal</option>
-                        </select>
+
+                    <!-- 3. Kehadiran & Kendala -->
+                    <div class="form-section">
+                        <h3 class="section-title">3️⃣ Kehadiran & Kendala</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="hadirCount">Hadir:</label>
+                                <input type="number" id="hadirCount" min="0" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="totalSiswa">Total Siswa:</label>
+                                <input type="number" id="totalSiswa" min="0" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="sakitCount">Sakit (S):</label>
+                                <input type="number" id="sakitCount" min="0" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="izinCount">Izin (I):</label>
+                                <input type="number" id="izinCount" min="0" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="alphaCount">Alpha (A):</label>
+                                <input type="number" id="alphaCount" min="0" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="kendalaUtama">Kendala Utama yang Ditemui:</label>
+                            <textarea id="kendalaUtama" rows="2" placeholder="Tuliskan masalah spesifik. Cth: Sebagian besar siswa kesulitan mengaitkan materi dengan konteks sehari-hari."></textarea>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="materi">Materi Pembelajaran:</label>
-                        <textarea id="materi" rows="4" placeholder="Tuliskan materi yang diajarkan..."></textarea>
+
+                    <!-- 4. Hasil Penilaian Cepat -->
+                    <div class="form-section">
+                        <h3 class="section-title">4️⃣ Hasil Penilaian Cepat</h3>
+                        <div class="form-group">
+                            <label for="jenisPenilaian">Jenis Penilaian yang Dilakukan:</label>
+                            <select id="jenisPenilaian">
+                                <option value="">Pilih Jenis Penilaian</option>
+                                <option value="Kuis Tertulis Singkat">Kuis Tertulis Singkat</option>
+                                <option value="Penilaian Kinerja Proyek">Penilaian Kinerja Proyek</option>
+                                <option value="Observasi Keaktifan Diskusi">Observasi Keaktifan Diskusi</option>
+                                <option value="Penilaian Portofolio">Penilaian Portofolio</option>
+                                <option value="Tes Lisan">Tes Lisan</option>
+                                <option value="Penilaian Praktik">Penilaian Praktik</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="tingkatPenguasaan">Tingkat Penguasaan Materi (Estimasi):</label>
+                            <select id="tingkatPenguasaan">
+                                <option value="">Pilih Tingkat Penguasaan</option>
+                                <option value="Mayoritas Paham">✅ Mayoritas Paham</option>
+                                <option value="50% Paham">⚠️ 50% Paham</option>
+                                <option value="Mayoritas Perlu Pengulangan">❌ Mayoritas Perlu Pengulangan</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="catatanKeberhasilan">Catatan Keberhasilan (Positif):</label>
+                            <textarea id="catatanKeberhasilan" rows="2" placeholder="Apa yang berhasil? Cth: Keterlibatan siswa sangat tinggi saat sesi presentasi."></textarea>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="kompetensi">Kompetensi Dasar:</label>
-                        <textarea id="kompetensi" rows="3" placeholder="Tuliskan kompetensi dasar..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="metode">Metode Pembelajaran (Deep Learning):</label>
-                        <select id="metode">
-                            <option value="">Pilih Metode</option>
-                            <option value="Experiential Learning">Experiential Learning (Pembelajaran Berbasis Pengalaman)</option>
-                            <option value="Project Based Learning">Project Based Learning (Pembelajaran Berbasis Proyek)</option>
-                            <option value="Problem Based Learning">Problem Based Learning (Pembelajaran Berbasis Masalah)</option>
-                            <option value="Inquiry Based Learning">Inquiry Based Learning (Pembelajaran Berbasis Penyelidikan)</option>
-                            <option value="Discovery Learning">Discovery Learning (Pembelajaran Penemuan)</option>
-                            <option value="Collaborative Learning">Collaborative Learning (Pembelajaran Kolaboratif)</option>
-                            <option value="Contextual Teaching Learning">Contextual Teaching Learning (CTL)</option>
-                            <option value="Differentiated Instruction">Differentiated Instruction (Pembelajaran Berdiferensiasi)</option>
-                            <option value="Mindful Learning">Mindful Learning (Pembelajaran Sadar Penuh)</option>
-                            <option value="Reflective Learning">Reflective Learning (Pembelajaran Reflektif)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="media">Media Pembelajaran:</label>
-                        <input type="text" id="media" placeholder="Contoh: PPT, Video, Modul, dll">
-                    </div>
-                    <div class="form-group">
-                        <label for="catatan">Catatan Khusus:</label>
-                        <textarea id="catatan" rows="3" placeholder="Catatan tentang proses pembelajaran..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="kendala">Kendala/Hambatan:</label>
-                        <textarea id="kendala" rows="2" placeholder="Kendala yang dihadapi..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="tindakLanjut">Tindak Lanjut:</label>
-                        <textarea id="tindakLanjut" rows="2" placeholder="Rencana tindak lanjut..."></textarea>
+
+                    <!-- 5. Tindak Lanjut -->
+                    <div class="form-section">
+                        <h3 class="section-title">5️⃣ Tindak Lanjut</h3>
+                        <div class="form-group">
+                            <label for="rencanaPerbaikan">Rencana Perbaikan/Lanjutan:</label>
+                            <textarea id="rencanaPerbaikan" rows="3" placeholder="Tindakan untuk sesi berikutnya. Cth: Perlu mengadakan sesi remedial untuk 10 siswa yang hasilnya di bawah KKM."></textarea>
+                        </div>
                     </div>
 
                     <div class="action-buttons">
-                        <button class="btn btn-primary" onclick="simpanJurnal()">💾 Simpan Jurnal</button>
-                        <button class="btn btn-secondary" onclick="resetJurnal()">🔄 Reset</button>
+                        <button class="btn btn-primary" onclick="simpanJurnalBaru()">💾 Simpan Jurnal</button>
+                        <button class="btn btn-secondary" onclick="resetJurnalBaru()">🔄 Reset</button>
                     </div>
                 </div>
             </section>
